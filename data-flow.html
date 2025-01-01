@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YC Directory Data Flow</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .flow-description {
+            margin-top: 40px;
+        }
+        .flow-description h2 {
+            color: #444;
+        }
+        .flow-description ul {
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>YC Directory Data Flow</h1>
+        
+        <div class="mermaid">
+            graph TD
+                A[User Browser] -->|Authentication| B[GitHub OAuth]
+                B -->|Auth Token| C[NextAuth]
+                C -->|Session| A
+
+                A -->|Create Startup| D[StartupForm Component]
+                D -->|Validate| E[Zod Schema]
+                E -->|Server Action| F[actions.ts]
+                F -->|Write| G[Sanity.io]
+
+                A -->|Search| H[SearchForm Component]
+                H -->|Query| I[Sanity Client]
+                I -->|Fetch| G
+
+                G -->|Content| J[Next.js Server Components]
+                J -->|Render| A
+
+                subgraph "Content Management"
+                    G -->|Real-time Updates| K[Sanity Studio]
+                    K -->|Mutations| G
+                end
+
+                subgraph "User Flow"
+                    L[Unauthenticated User] -->|Login| B
+                    M[Authenticated User] -->|Create Startup| D
+                    M -->|View Profile| N[User Profile]
+                    N -->|Fetch User Startups| I
+                end
+
+                subgraph "Data Validation"
+                    E -->|Success| F
+                    E -->|Error| O[Toast Notifications]
+                    O -->|Display| A
+                end
+        </div>
+
+        <div class="flow-description">
+            <h2>Flow Description</h2>
+            
+            <h3>1. Authentication Flow</h3>
+            <ul>
+                <li>User initiates login through GitHub</li>
+                <li>NextAuth handles OAuth flow and session management</li>
+                <li>Session information is available throughout the app</li>
+            </ul>
+
+            <h3>2. Startup Creation Flow</h3>
+            <ul>
+                <li>Authenticated user fills StartupForm</li>
+                <li>Client-side validation through Zod</li>
+                <li>Server action processes validated data</li>
+                <li>Data is stored in Sanity.io</li>
+                <li>User receives success/error notification</li>
+            </ul>
+
+            <h3>3. Search Flow</h3>
+            <ul>
+                <li>User enters search query</li>
+                <li>Query processed by Sanity client</li>
+                <li>Results fetched and rendered through Server Components</li>
+                <li>Real-time updates if content changes</li>
+            </ul>
+
+            <h3>4. Content Management Flow</h3>
+            <ul>
+                <li>Sanity Studio provides admin interface</li>
+                <li>Content changes trigger real-time updates</li>
+                <li>CDN caches content for performance</li>
+                <li>Server Components re-render with new data</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

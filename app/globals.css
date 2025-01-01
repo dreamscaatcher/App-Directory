@@ -219,25 +219,3 @@
 .w-md-editor-toolbar {
     padding: 10px !important;
 }
-
-@layer components {
-    .sentry-main {
-        @apply min-h-screen flex flex-col justify-center items-center;
-    }
-
-    .sentry-title {
-        @apply text-6xl m-[14px_0];
-    }
-
-    .sentry-title-icon {
-        @apply h-[1em];
-    }
-
-    .sentry-button {
-        @apply p-3 cursor-pointer bg-[#AD6CAA] rounded text-white text-sm m-[18px] border-none;
-    }
-
-    .sentry-link-text {
-        @apply mt-6;
-    }
-}
